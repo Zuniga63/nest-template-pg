@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
-import { CommonModule } from './common/common.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { appConfig, EnvironmentVariables, JoiValidationSchema } from './config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
+import { CommonModule } from './modules/common/common.module';
+import { appConfig, EnvironmentVariables, JoiValidationSchema } from './config';
 
 @Module({
   imports: [
@@ -28,6 +31,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
 
     CommonModule,
+
+    AuthModule,
+
+    UsersModule,
   ],
   controllers: [],
   providers: [],
