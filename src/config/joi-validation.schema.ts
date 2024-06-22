@@ -7,6 +7,9 @@ export const JoiValidationSchema = Joi.object({
   APP_HOST: Joi.string().default('http://localhost'),
   PORT: Joi.number().port().default(3000),
 
+  JWT_SECRET: Joi.string().required(),
+  JWT_EXPIRES_IN: Joi.string().default('1d'),
+
   DB_HOST: Joi.string().required(),
   DB_PORT: Joi.number().port().default(5432),
   DB_USER: Joi.string().required(),

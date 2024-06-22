@@ -5,6 +5,10 @@ export interface EnvironmentVariables {
     port: number;
     host: string;
   };
+  jwt: {
+    secret: string;
+    expiresIn: string;
+  };
   database: {
     host: string;
     port: number;
@@ -21,6 +25,11 @@ export const appConfig = (): EnvironmentVariables => ({
   http: {
     port: parseInt(process.env.PORT, 10) || 3000,
     host: process.env.APP_HOST || 'localhost',
+  },
+
+  jwt: {
+    secret: process.env.JWT_SECRET,
+    expiresIn: process.env.JWT_EXPIRES_IN || '1d',
   },
 
   database: {
