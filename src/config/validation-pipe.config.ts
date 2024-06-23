@@ -1,4 +1,5 @@
 import { BadRequestException, ValidationPipeOptions, ValidationError } from '@nestjs/common';
+import { mapValidationErrors } from 'src/utils/map-validation-errors';
 
 export const validationPipeConfig: ValidationPipeOptions = {
   validationError: { target: true, value: true },
@@ -10,30 +11,7 @@ export const validationPipeConfig: ValidationPipeOptions = {
   stopAtFirstError: true, // Detiene la validación en el primer error encontrado
 
   exceptionFactory(errors: ValidationError[]) {
-    const validationErrors = errors.reduce(
-      (acc, validationError) => {
-        const { property, value, constraints, children } = validationError;
-        let message = '';
-
-        if (constraints) {
-          message = Object.values(constraints).join(' ').trim();
-        }
-
-        if (children && children.length > 0) {
-          acc[property] = {
-            message: 'Validation failed in nested objects',
-            value,
-            children: this.mapChildrenErrors(children),
-          };
-        } else {
-          acc[property] = { message, value };
-        }
-
-        return acc;
-      },
-      {} as Record<string, { message: string; value: any; children?: any }>,
-    );
-
+    const validationErrors = mapValidationErrors(errors);
     return new BadRequestException({ validationErrors });
   },
 };

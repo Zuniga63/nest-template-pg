@@ -1,8 +1,9 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
-import { appConfig, validationPipeConfig } from './config';
+import { appConfig, swaggerConfig, validationPipeConfig } from './config';
 import { AllExceptionsFilter } from './modules/common/filters/all-exceptions.filter';
 
 async function bootstrap() {
@@ -14,11 +15,15 @@ async function bootstrap() {
   // Set global prefix for all routes
   app.setGlobalPrefix('api');
 
-  // Se global validation pipe
+  // Set global validation pipe
   app.useGlobalPipes(new ValidationPipe(validationPipeConfig));
 
   // Set global exception filter
   app.useGlobalFilters(new AllExceptionsFilter(app.get(HttpAdapterHost)));
+
+  // Set Swagger
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api/docs', app, document);
 
   await app.listen(http.port);
   logger.log(`Application listening on ${http.host}:${http.port}`);

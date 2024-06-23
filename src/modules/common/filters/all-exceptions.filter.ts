@@ -90,6 +90,4 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
-
-  // TODO
 }
