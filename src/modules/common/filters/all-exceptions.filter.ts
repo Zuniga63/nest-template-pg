@@ -51,7 +51,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
         const regex = /\((.*?)\)=\((.*?)\)/;
         const [property, value] = detail.match(regex).slice(1);
-        errorMessage = `User with ${property} "${value}" already exists`;
+        errorMessage = `The property "${property}" with value "${value}" already exists`;
 
         httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
         errorType = 'Duplicate key';
