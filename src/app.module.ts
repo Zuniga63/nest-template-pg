@@ -6,6 +6,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { CommonModule } from './modules/common/common.module';
 import { appConfig, EnvironmentVariables, JoiValidationSchema } from './config';
+import { RolesModule } from './modules/roles/roles.module';
 
 @Module({
   imports: [
@@ -35,6 +36,8 @@ import { appConfig, EnvironmentVariables, JoiValidationSchema } from './config';
     AuthModule,
 
     UsersModule,
+
+    RolesModule,
   ],
   controllers: [],
   providers: [],

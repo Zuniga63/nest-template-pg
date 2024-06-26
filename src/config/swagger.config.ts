@@ -7,5 +7,6 @@ export const swaggerConfig = new DocumentBuilder()
   .setVersion('1.0')
   .addTag(SwaggerTags.Auth, 'End point for register and login')
   .addTag(SwaggerTags.Users, 'Route for user administration')
+  .addTag(SwaggerTags.Roles, 'Route for role administration')
   .addBearerAuth()
   .build();

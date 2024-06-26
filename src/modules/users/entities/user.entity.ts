@@ -1,4 +1,15 @@
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
+import { Role } from 'src/modules/roles/entities/role.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -7,6 +18,10 @@ export class User {
 
   @Column('text')
   name: string;
+
+  @ManyToOne(() => Role, role => role.users, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'role_id' })
+  role: Role;
 
   @Column('text', { unique: true })
   email: string;

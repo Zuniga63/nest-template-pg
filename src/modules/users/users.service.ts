@@ -31,13 +31,14 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<SecureUser> {
-    const user = await this.usersRepository.findOneBy({ id });
+    const user = await this.usersRepository.findOne({ where: { id }, relations: ['role'] });
     return user;
   }
 
   async getFullUser(email: string): Promise<User> {
     return this.usersRepository
       .createQueryBuilder('user')
+      .leftJoinAndSelect('user.role', 'role')
       .addSelect('user.password')
       .where('user.email = :email', { email })
       .getOne();
