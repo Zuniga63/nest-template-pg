@@ -1,6 +1,6 @@
 import { IsArray, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 import { IsValidPermission } from '../decorators/is-valid-permission.decorator';
-import { Permissions } from 'src/config';
+import { AppPermissions } from 'src/config';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateRoleDto {
@@ -17,14 +17,19 @@ export class CreateRoleDto {
 
   @ApiProperty({
     description: 'The permissions of the role',
-    example: [Permissions.READ_ROLE, Permissions.CREATE_ROLE, Permissions.UPDATE_ROLE, Permissions.DELETE_ROLE],
+    example: [
+      AppPermissions.READ_ROLE,
+      AppPermissions.CREATE_ROLE,
+      AppPermissions.UPDATE_ROLE,
+      AppPermissions.DELETE_ROLE,
+    ],
     isArray: true,
-    enum: Permissions,
+    enum: AppPermissions,
     required: false,
   })
   @IsValidPermission({ message: 'One or more permissions are invalid', each: true })
   @IsNotEmpty()
   @IsArray()
   @IsOptional()
-  permissions: Permissions[];
+  permissions: AppPermissions[];
 }

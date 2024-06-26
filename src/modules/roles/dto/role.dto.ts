@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Permissions } from 'src/config';
+import { AppPermissions } from 'src/config';
 
 export class RoleDto {
   @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'The id of the role' })
@@ -10,10 +10,15 @@ export class RoleDto {
 
   @ApiProperty({
     description: 'The permissions of the role',
-    example: [Permissions.READ_ROLE, Permissions.CREATE_ROLE, Permissions.UPDATE_ROLE, Permissions.DELETE_ROLE],
+    example: [
+      AppPermissions.READ_ROLE,
+      AppPermissions.CREATE_ROLE,
+      AppPermissions.UPDATE_ROLE,
+      AppPermissions.DELETE_ROLE,
+    ],
     isArray: true,
-    enum: Permissions,
+    enum: AppPermissions,
     required: false,
   })
-  permissions: Permissions[];
+  permissions: AppPermissions[];
 }

@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { Permissions } from 'src/config';
+import { AppPermissions } from 'src/config';
 import { User } from 'src/modules/users/entities/user.entity';
 
 @Entity()
@@ -12,7 +12,7 @@ export class Role {
   name: string;
 
   @Column('text', { array: true })
-  permissions: Permissions[];
+  permissions: AppPermissions[];
 
   @OneToMany(() => User, user => user.role, { onDelete: 'SET NULL' })
   users: User[];
