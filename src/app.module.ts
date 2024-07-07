@@ -5,7 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { CommonModule } from './modules/common/common.module';
-import { appConfig, EnvironmentVariables, JoiValidationSchema } from './config';
+import { appConfig, JoiValidationSchema, typeOrmConfig } from './config';
 import { RolesModule } from './modules/roles/roles.module';
 
 @Module({
@@ -18,16 +18,7 @@ import { RolesModule } from './modules/roles/roles.module';
 
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService<EnvironmentVariables>) => ({
-        type: 'postgres',
-        host: configService.get('database.host', { infer: true }),
-        port: configService.get<number>('database.port', { infer: true }),
-        username: configService.get('database.user', { infer: true }),
-        password: configService.get('database.password', { infer: true }),
-        database: configService.get('database.name', { infer: true }),
-        autoLoadEntities: true,
-        synchronize: configService.get('database.synchronize', { infer: true }),
-      }),
+      useFactory: typeOrmConfig,
     }),
 
     CommonModule,

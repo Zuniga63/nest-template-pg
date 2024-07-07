@@ -66,6 +66,11 @@ Este proyecto tiene como objetivo proporcionar un punto de partida para el desar
 
 4. Establecer las variables de entorno tanto de la app como de la base de datos
 
+## Generar migraciones
+
+- npm run migration:create --name=your_migration_name
+- npm run migration:generate --name=your_migration_name
+
 ## Correr la aplicación
 
 Para poder iniciar la aplicaicón es necesario que las credenciales de la base de datos estén establecidas.
