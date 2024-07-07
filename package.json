@@ -6,9 +6,9 @@
   "private": true,
   "license": "UNLICENSED",
   "engines": {
-    "node": "20.x",
-    "pnpm": "9.x"
+    "node": "20.x"
   },
+  "packageManager": "pnpm@9.4.0",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
