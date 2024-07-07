@@ -1,31 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import {
   ApiBadRequestResponse,
-  ApiBearerAuth,
-  ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiTags,
-  ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { AppPermissions, SwaggerTags } from 'src/config';
 import { RoleDto } from './dto/role.dto';
 import { ValidationErrorDto } from '../common/dto/validation-error.dto';
-import { JwtAuthGuard, PermissionsGuard } from '../auth/guards';
-import { RequirePermissions } from '../auth/decorators/required-permission.decorator';
+import { Auth } from '../auth/decorators';
 
-@UseGuards(JwtAuthGuard, PermissionsGuard)
 @Controller('roles')
 @ApiTags(SwaggerTags.Roles)
-@ApiBearerAuth()
-@ApiUnauthorizedResponse({ description: 'Unauthorized' })
-@ApiForbiddenResponse({ description: 'Forbidden' })
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
@@ -33,7 +25,7 @@ export class RolesController {
   // * CREATE NEW ROLE
   // * -------------------------------------------------------------------------------------------------------------
   @Post()
-  @RequirePermissions(AppPermissions.CREATE_ROLE)
+  @Auth(AppPermissions.CREATE_ROLE)
   @ApiOperation({
     summary: 'Create a new role',
     description: 'This end point creates a new role',
@@ -58,7 +50,7 @@ export class RolesController {
   // * GET ALL ROLES
   // * -------------------------------------------------------------------------------------------------------------
   @Get()
-  @RequirePermissions(AppPermissions.READ_ROLE)
+  @Auth(AppPermissions.READ_ROLE)
   @ApiOperation({
     summary: 'Get all roles',
     description: 'This end point returns all roles',
@@ -75,7 +67,7 @@ export class RolesController {
   // * GET ONE ROLE
   // * -------------------------------------------------------------------------------------------------------------
   @Get(':id')
-  @RequirePermissions(AppPermissions.READ_ROLE)
+  @Auth(AppPermissions.READ_ROLE)
   @ApiOperation({
     summary: 'Get one role',
     description: 'This end point returns one role',
@@ -107,7 +99,7 @@ export class RolesController {
   // * UPDATE ROLE
   // * ----------------------------------------------------------------------------------------------------------------
   @Patch(':id')
-  @RequirePermissions(AppPermissions.UPDATE_ROLE)
+  @Auth(AppPermissions.UPDATE_ROLE)
   @ApiOperation({
     summary: 'Update one role',
     description: 'This end point updates one role',
@@ -136,7 +128,7 @@ export class RolesController {
   // * DELETE ROLE
   // * ----------------------------------------------------------------------------------------------------------------
   @Delete(':id')
-  @RequirePermissions(AppPermissions.DELETE_ROLE)
+  @Auth(AppPermissions.DELETE_ROLE)
   @ApiOperation({
     summary: 'Delete one role',
     description: 'This end point deletes one role',
@@ -159,7 +151,7 @@ export class RolesController {
   // * ADD USER TO ROLE
   // * ----------------------------------------------------------------------------------------------------------------
   @Post(':roleId/users/:userId')
-  @RequirePermissions(AppPermissions.ADD_USER_ROLE)
+  @Auth(AppPermissions.ADD_USER_ROLE)
   @ApiOperation({
     summary: 'Add user to role',
     description: 'This end point adds a user to a role',
@@ -183,7 +175,7 @@ export class RolesController {
   // * DELETE USER FROM ROLE
   // * ----------------------------------------------------------------------------------------------------------------
   @Delete(':roleId/users/:userId')
-  @RequirePermissions(AppPermissions.REMOVE_USER_ROLE)
+  @Auth(AppPermissions.REMOVE_USER_ROLE)
   @ApiOperation({
     summary: 'Delete user from role',
     description: 'This end point deletes a user from a role',
