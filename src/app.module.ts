@@ -18,7 +18,6 @@ import { RolesModule } from './modules/roles/roles.module';
 
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      imports: [ConfigModule],
       useFactory: (configService: ConfigService<EnvironmentVariables>) => ({
         type: 'postgres',
         host: configService.get('database.host', { infer: true }),
@@ -27,7 +26,7 @@ import { RolesModule } from './modules/roles/roles.module';
         password: configService.get('database.password', { infer: true }),
         database: configService.get('database.name', { infer: true }),
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: configService.get('database.synchronize', { infer: true }),
       }),
     }),
 

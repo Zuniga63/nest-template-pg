@@ -15,6 +15,7 @@ export interface EnvironmentVariables {
     user: string;
     password: string;
     name: string;
+    synchronize: boolean;
   };
 }
 
@@ -38,5 +39,6 @@ export const appConfig = (): EnvironmentVariables => ({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     name: process.env.DB_NAME,
+    synchronize: process.env.DB_SYNCHRONIZE === 'true',
   },
 });
