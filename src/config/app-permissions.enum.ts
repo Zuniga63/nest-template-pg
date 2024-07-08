@@ -17,4 +17,8 @@ export enum AppPermissions {
   DELETE_ROLE = 'DELETE_ROLE',
   ADD_USER_ROLE = 'ADD_USER_ROLE',
   REMOVE_USER_ROLE = 'REMOVE_USER_ROLE',
+  // ---------------------------------------------------------------
+  // SUPER ADMIN PERMISSIONS
+  // ---------------------------------------------------------------
+  INSTALL_CLOUDINARY_PRESETS = 'INSTALL_CLOUD_PRESETS',
 }

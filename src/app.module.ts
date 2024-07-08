@@ -2,10 +2,13 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { AuthModule } from './modules/auth/auth.module';
-import { UsersModule } from './modules/users/users.module';
-import { CommonModule } from './modules/common/common.module';
 import { appConfig, JoiValidationSchema, typeOrmConfig } from './config';
+
+import { AuthModule } from './modules/auth/auth.module';
+import { CommonModule } from './modules/common/common.module';
+import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
+
+import { UsersModule } from './modules/users/users.module';
 import { RolesModule } from './modules/roles/roles.module';
 
 @Module({
@@ -28,6 +31,8 @@ import { RolesModule } from './modules/roles/roles.module';
     UsersModule,
 
     RolesModule,
+
+    CloudinaryModule,
   ],
   controllers: [],
   providers: [],
