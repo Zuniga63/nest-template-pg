@@ -1,7 +1,8 @@
-import { Controller, Post, Body, Request, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Request, UseGuards, Get, UploadedFile, UseInterceptors } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiExtraModels,
   ApiOkResponse,
@@ -19,6 +20,11 @@ import { AuthResponseSchema } from './schemas/swagger.schema';
 import { UserDto } from '../users/dto/user.dto';
 import { ValidationErrorDto } from '../common/dto/validation-error.dto';
 import { LoginUserDto } from './dto/login-user.dto';
+import { Auth } from './decorators';
+import { GetUser } from '../common/decorators/get-user.decorator';
+import { SecureUser } from '../users/interfaces/secure-user.interface';
+import { ProfilePhotoDto } from './dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('auth')
 @ApiExtraModels(UserDto)
@@ -67,5 +73,36 @@ export class AuthController {
   })
   localRegister(@Body() createUserDto: CreateUserDto) {
     return this.authService.registerUser(createUserDto);
+  }
+
+  // * ----------------------------------------------------------------------------------------------------------------
+  // * PROFILE
+  // * ----------------------------------------------------------------------------------------------------------------
+  @Get('profile')
+  @Auth()
+  @ApiOperation({
+    summary: 'Get user profile',
+    description: 'This end recover the info of one user',
+  })
+  @ApiOkResponse({
+    description: 'User Info',
+    type: UserDto,
+  })
+  getProfile(@GetUser() user: SecureUser) {
+    return user;
+  }
+
+  @Auth()
+  @Post('profile/photo')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: ProfilePhotoDto })
+  @ApiOkResponse({
+    description: 'User Info',
+    type: UserDto,
+  })
+  @ApiBadRequestResponse({ description: 'The image can not uploaded' })
+  updateProfilePhoto(@UploadedFile() file: Express.Multer.File, @GetUser() user: SecureUser) {
+    return this.authService.updateProfilePhoto(user, file);
   }
 }

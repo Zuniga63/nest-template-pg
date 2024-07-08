@@ -34,6 +34,10 @@ export class AuthService {
     return this.loginUser(user);
   }
 
+  async updateProfilePhoto(user: SecureUser, file: Express.Multer.File) {
+    return this.usersService.updateProfilePhoto(user.id, file);
+  }
+
   private getAccessToken(user: SecureUser) {
     const payload: JwtPayload = { sub: user.id };
     return this.jwtService.sign(payload);
