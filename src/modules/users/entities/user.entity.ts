@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 
 import { Role } from 'src/modules/roles/entities/role.entity';
+import { CloudinaryImage } from 'src/modules/cloudinary/interfaces';
 
 @Entity({ name: 'users' })
 export class User {
@@ -29,8 +30,8 @@ export class User {
   @Column('text', { select: false })
   password: string;
 
-  @Column('text', { nullable: true, name: 'profile_photo_path' })
-  profilePhotoPath?: string;
+  @Column('json', { nullable: true, name: 'profile_photo_path' })
+  profilePhotoPath?: CloudinaryImage;
 
   @Column('timestamp', { nullable: true, name: 'email_verified_at' })
   emailVerifiedAt?: boolean;
