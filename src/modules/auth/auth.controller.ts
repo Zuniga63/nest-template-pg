@@ -1,23 +1,9 @@
-import {
-  Controller,
-  Post,
-  Body,
-  UseGuards,
-  Get,
-  UploadedFile,
-  UseInterceptors,
-  Delete,
-  Put,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
-  ApiConsumes,
   ApiCreatedResponse,
   ApiExtraModels,
-  ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -33,12 +19,8 @@ import { AuthResponseSchema } from './schemas/swagger.schema';
 import { UserDto } from '../users/dto/user.dto';
 import { ValidationErrorDto } from '../common/dto/validation-error.dto';
 import { LoginUserDto } from './dto/login-user.dto';
-import { Auth } from './decorators';
 import { GetUser } from '../common/decorators/get-user.decorator';
-import { ProfilePhotoDto } from './dto';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '../users/entities/user.entity';
-import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('auth')
 @ApiExtraModels(UserDto)
@@ -87,54 +69,5 @@ export class AuthController {
   })
   localRegister(@Body() createUserDto: CreateUserDto) {
     return this.authService.registerUser(createUserDto);
-  }
-
-  // * ----------------------------------------------------------------------------------------------------------------
-  // * PROFILE
-  // * ----------------------------------------------------------------------------------------------------------------
-  @Get('profile')
-  @Auth()
-  @ApiOperation({
-    summary: 'Get user profile',
-    description: 'This end recover the info of one user',
-  })
-  @ApiOkResponse({
-    description: 'User Info',
-    // type: UserDto,
-  })
-  getProfile(@GetUser() user: User) {
-    return new UserDto(user);
-  }
-
-  @Auth()
-  @Post('profile/photo')
-  @UseInterceptors(FileInterceptor('file'))
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: ProfilePhotoDto })
-  @ApiOkResponse({
-    description: 'User Info',
-    type: UserDto,
-  })
-  @ApiBadRequestResponse({ description: 'The image can not uploaded' })
-  updateProfilePhoto(@UploadedFile() file: Express.Multer.File, @GetUser() user: User) {
-    return this.authService.updateProfilePhoto(user, file);
-  }
-
-  @Auth()
-  @Delete('profile/photo')
-  @ApiOperation({ summary: 'Delete user profile photo', description: 'This end point delete the user profile photo' })
-  @ApiOkResponse({ description: 'The image has been deleted' })
-  @ApiBadRequestResponse({ description: 'The image can not deleted' })
-  destroyProfilePhoto(@GetUser() user: User) {
-    return this.authService.destroyProfilePhoto(user);
-  }
-
-  @Auth()
-  @Put('change-password')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Change user password', description: 'This end point change the current password' })
-  @ApiNoContentResponse({ description: 'Password has been changed' })
-  changePassword(@Body() changePasswordDto: ChangePasswordDto, @GetUser() user: User) {
-    return this.authService.changePassword(user, changePasswordDto);
   }
 }

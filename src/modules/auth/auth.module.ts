@@ -8,6 +8,7 @@ import { EnvironmentVariables } from 'src/config';
 import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 import { LocalStrategy, JwtStrategy } from './strategies';
+import { ProfileController } from './profile.controller';
 
 @Module({
   imports: [
@@ -24,6 +25,6 @@ import { LocalStrategy, JwtStrategy } from './strategies';
     }),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
-  controllers: [AuthController],
+  controllers: [AuthController, ProfileController],
 })
 export class AuthModule {}
