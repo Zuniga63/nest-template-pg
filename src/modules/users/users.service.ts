@@ -54,7 +54,7 @@ export class UsersService {
     const user = await this.findOne(id);
     if (!user) throw new NotFoundException('User not found');
 
-    const { profilePhotoPath: currentProfilePath } = user;
+    const { profilePhoto: currentProfilePath } = user;
     let image: CloudinaryImage | undefined;
 
     try {
@@ -69,7 +69,7 @@ export class UsersService {
       if (!image) throw new BadRequestException('Error uploading image');
 
       // * Update the user's profile photo path
-      user.profilePhotoPath = image;
+      user.profilePhoto = image;
       await this.usersRepository.save(user);
 
       // * Delete the old profile photo if it exists
@@ -88,5 +88,19 @@ export class UsersService {
 
       throw error;
     }
+  }
+
+  async removeProfilePhoto(id: string) {
+    const user = await this.findOne(id);
+    if (!user) throw new NotFoundException('User not found');
+
+    const { profilePhoto } = user;
+    if (!profilePhoto) throw new BadRequestException('User does not have a profile photo');
+
+    await this.cloudinaryService.destroyFile(profilePhoto.publicId);
+    user.profilePhoto = null;
+    await this.usersRepository.save(user);
+
+    return user;
   }
 }

@@ -8,7 +8,7 @@ export class UserDto {
   email: string;
 
   @ApiProperty({ example: null, nullable: true })
-  profilePhotoPath: string | null;
+  profilePhoto: string | null;
 
   @ApiProperty({ example: null, nullable: true })
   emailVerifiedAt: string | null;

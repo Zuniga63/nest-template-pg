@@ -38,6 +38,10 @@ export class AuthService {
     return this.usersService.updateProfilePhoto(user.id, file);
   }
 
+  async destroyProfilePhoto(user: SecureUser) {
+    return this.usersService.removeProfilePhoto(user.id);
+  }
+
   private getAccessToken(user: SecureUser) {
     const payload: JwtPayload = { sub: user.id };
     return this.jwtService.sign(payload);

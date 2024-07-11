@@ -30,8 +30,8 @@ export class User {
   @Column('text', { select: false })
   password: string;
 
-  @Column('json', { nullable: true, name: 'profile_photo_path' })
-  profilePhotoPath?: CloudinaryImage;
+  @Column('json', { nullable: true, name: 'profile_photo' })
+  profilePhoto?: CloudinaryImage;
 
   @Column('timestamp', { nullable: true, name: 'email_verified_at' })
   emailVerifiedAt?: boolean;

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Request, UseGuards, Get, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, Body, Request, UseGuards, Get, UploadedFile, UseInterceptors, Delete } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -104,5 +104,17 @@ export class AuthController {
   @ApiBadRequestResponse({ description: 'The image can not uploaded' })
   updateProfilePhoto(@UploadedFile() file: Express.Multer.File, @GetUser() user: SecureUser) {
     return this.authService.updateProfilePhoto(user, file);
+  }
+
+  @Auth()
+  @Delete('profile/photo')
+  @ApiOperation({ summary: 'Delete user profile photo', description: 'This end point delete the user profile photo' })
+  @ApiOkResponse({
+    description: 'User Info',
+    type: UserDto,
+  })
+  @ApiBadRequestResponse({ description: 'The image can not deleted' })
+  destroyProfilePhoto(@GetUser() user: SecureUser) {
+    return this.authService.destroyProfilePhoto(user);
   }
 }
