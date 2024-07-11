@@ -8,6 +8,7 @@ import { UsersService } from '../users/users.service';
 import { JwtPayload } from './interfaces/JwtPayload.interface';
 import { UserDto } from '../users/dto/user.dto';
 import { User } from '../users/entities/user.entity';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -41,6 +42,10 @@ export class AuthService {
 
   async destroyProfilePhoto(user: User) {
     return this.usersService.removeProfilePhoto(user.id);
+  }
+
+  async changePassword(user: User, changePasswordDto: ChangePasswordDto) {
+    return this.usersService.changePassword(user.email, changePasswordDto);
   }
 
   private getAccessToken(user: User) {

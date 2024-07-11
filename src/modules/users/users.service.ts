@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
@@ -10,6 +10,8 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { CloudinaryImage } from '../cloudinary/interfaces';
 import { CloudinaryPresets } from 'src/config';
 import { UserDto } from './dto/user.dto';
+import { ChangePasswordDto } from '../auth/dto/change-password.dto';
+import { compareSync } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -102,5 +104,16 @@ export class UsersService {
     await this.usersRepository.save(user);
 
     return new UserDto(user);
+  }
+
+  async changePassword(email: string, changePasswordDto: ChangePasswordDto) {
+    const { password, newPassword } = changePasswordDto;
+
+    const user = await this.getFullUser(email);
+    if (!user) throw new NotFoundException('User not found');
+    if (!compareSync(password, user.password)) throw new UnauthorizedException('Invalid password');
+
+    user.password = hashPassword(newPassword);
+    await this.usersRepository.save(user);
   }
 }
