@@ -9,6 +9,8 @@ import {
   Put,
   HttpCode,
   HttpStatus,
+  Param,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -21,7 +23,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 import { SwaggerTags } from 'src/config';
 import { UserDto } from '../users/dto/user.dto';
 import { Auth } from './decorators';
@@ -30,13 +32,17 @@ import { ProfilePhotoDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '../users/entities/user.entity';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { SessionService } from './services';
 
 @Controller('auth/profile')
 @Auth()
 @ApiExtraModels(UserDto)
 @ApiTags(SwaggerTags.Profile)
 export class ProfileController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly sessionService: SessionService,
+  ) {}
 
   // * ----------------------------------------------------------------------------------------------------------------
   // * GET USER PROFILE
@@ -89,5 +95,25 @@ export class ProfileController {
   @ApiNoContentResponse({ description: 'Password has been changed' })
   changePassword(@Body() changePasswordDto: ChangePasswordDto, @GetUser() user: User) {
     return this.authService.changePassword(user, changePasswordDto);
+  }
+
+  // * ----------------------------------------------------------------------------------------------------------------
+  // * GET USER SESSIONS
+  // * ----------------------------------------------------------------------------------------------------------------
+  @Get('sessions')
+  @ApiOperation({ summary: 'Get user sessions', description: 'This end point get all the user sessions' })
+  @ApiOkResponse({ description: 'User sessions' })
+  getSessions(@GetUser() user: User) {
+    return this.sessionService.findAllByUserId(user.id);
+  }
+
+  // * ----------------------------------------------------------------------------------------------------------------
+  // * DELETE USER SESSION
+  // * ----------------------------------------------------------------------------------------------------------------
+  @Delete('sessions/:sessionId')
+  @ApiOperation({ summary: 'Delete user session', description: 'This end point delete a user session' })
+  @ApiNoContentResponse({ description: 'Session has been deleted' })
+  deleteSession(@Param('sessionId', ParseUUIDPipe) sessionId: string) {
+    return this.sessionService.deleteSession(sessionId);
   }
 }

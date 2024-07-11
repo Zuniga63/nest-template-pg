@@ -43,6 +43,16 @@ export class UsersService {
     return user;
   }
 
+  async findOneWithSessionAndRole(id: string, sessionId: string): Promise<User> {
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .innerJoinAndSelect('user.sessions', 'session')
+      .leftJoinAndSelect('user.role', 'role')
+      .where('user.id = :id', { id })
+      .andWhere('session.id = :sessionId', { sessionId })
+      .getOne();
+  }
+
   async getFullUser(email: string): Promise<User> {
     return this.usersRepository
       .createQueryBuilder('user')

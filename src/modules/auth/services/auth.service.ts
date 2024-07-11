@@ -3,18 +3,21 @@ import { JwtService } from '@nestjs/jwt';
 
 import { compareSync } from 'bcrypt';
 
-import { CreateUserDto } from '../users/dto';
-import { UsersService } from '../users/users.service';
-import { JwtPayload } from './interfaces/JwtPayload.interface';
-import { UserDto } from '../users/dto/user.dto';
-import { User } from '../users/entities/user.entity';
-import { ChangePasswordDto } from './dto/change-password.dto';
+import { AuthLoginParams } from '../types';
+import { CreateUserDto } from '../../users/dto';
+import { SessionService } from './session.service';
+import { UserDto } from '../../users/dto/user.dto';
+import { User } from '../../users/entities/user.entity';
+import { UsersService } from '../../users/users.service';
+import { JwtPayload } from '../interfaces/JwtPayload.interface';
+import { ChangePasswordDto } from '../dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly sessionService: SessionService,
   ) {}
 
   async validateUser(username: string, pass: string): Promise<User> {
@@ -25,15 +28,15 @@ export class AuthService {
     return user;
   }
 
-  async loginUser(user: User) {
-    const access_token = this.getAccessToken(user);
-
+  async loginUser({ user, ip, userAgent }: AuthLoginParams) {
+    const session = await this.sessionService.createSession({ user, ip, userAgent });
+    const access_token = this.createAccessToken({ user, session_id: session.id });
     return { user: new UserDto(user), access_token };
   }
 
   async registerUser(createUserDto: CreateUserDto) {
     const user = await this.usersService.create(createUserDto);
-    return this.loginUser(user);
+    return this.loginUser({ user, ip: '1', userAgent: '1' });
   }
 
   async updateProfilePhoto(user: User, file: Express.Multer.File) {
@@ -48,8 +51,8 @@ export class AuthService {
     return this.usersService.changePassword(user.email, changePasswordDto);
   }
 
-  private getAccessToken(user: User) {
-    const payload: JwtPayload = { sub: user.id };
+  private createAccessToken({ user, session_id }: { user: User; session_id: string }) {
+    const payload: JwtPayload = { sub: user.id, session_id };
     return this.jwtService.sign(payload);
   }
 }

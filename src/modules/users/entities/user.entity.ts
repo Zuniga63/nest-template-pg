@@ -6,11 +6,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 import { Role } from 'src/modules/roles/entities/role.entity';
 import { CloudinaryImage } from 'src/modules/cloudinary/interfaces';
+import { Session } from 'src/modules/auth/entities';
 
 @Entity({ name: 'users' })
 export class User {
@@ -47,6 +49,9 @@ export class User {
 
   @Column('timestamp', { name: 'updated_at', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt?: Date;
+
+  @OneToMany(() => Session, session => session.user)
+  sessions: Session[];
 
   @BeforeInsert()
   emailToLowerCase() {

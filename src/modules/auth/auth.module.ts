@@ -1,14 +1,17 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 
-import { AuthService } from './auth.service';
+import { Session } from './entities';
 import { EnvironmentVariables } from 'src/config';
 import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 import { LocalStrategy, JwtStrategy } from './strategies';
 import { ProfileController } from './profile.controller';
+
+import { AuthService, SessionService } from './services';
 
 @Module({
   imports: [
@@ -23,8 +26,10 @@ import { ProfileController } from './profile.controller';
         signOptions: { expiresIn: config.get('jwt.expiresIn', { infer: true }) },
       }),
     }),
+
+    TypeOrmModule.forFeature([Session]),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, SessionService, LocalStrategy, JwtStrategy],
   controllers: [AuthController, ProfileController],
 })
 export class AuthModule {}

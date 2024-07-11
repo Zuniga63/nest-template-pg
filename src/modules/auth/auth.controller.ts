@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Ip, Headers } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -11,7 +11,7 @@ import {
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 import { CreateUserDto } from '../users/dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { SwaggerTags } from 'src/config';
@@ -43,8 +43,8 @@ export class AuthController {
   })
   @ApiUnauthorizedResponse({ description: 'Email or password invalid.' })
   @Post('local/login')
-  async localLogin(@GetUser() user: User) {
-    return this.authService.loginUser(user);
+  async localLogin(@GetUser() user: User, @Ip() ip: string, @Headers('user-agent') userAgent: string) {
+    return this.authService.loginUser({ user, ip, userAgent });
   }
 
   // * ----------------------------------------------------------------------------------------------------------------
