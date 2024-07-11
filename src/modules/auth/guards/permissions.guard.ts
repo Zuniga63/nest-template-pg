@@ -4,7 +4,7 @@ import { Reflector } from '@nestjs/core';
 
 import { AppPermissions } from 'src/config';
 import { PERMISSION_DECORATOR_KEY } from '../decorators/required-permission.decorator';
-import { SecureUser } from 'src/modules/users/interfaces/secure-user.interface';
+import { User } from 'src/modules/users/entities/user.entity';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -20,7 +20,7 @@ export class PermissionsGuard implements CanActivate {
 
     if (!requiredPermissions) return true;
 
-    const user: SecureUser = context.switchToHttp().getRequest().user;
+    const user: User = context.switchToHttp().getRequest().user;
 
     if (!user || !user.isActive) return false;
     if (user.isSuperUser) return true;

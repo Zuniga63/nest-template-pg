@@ -6,7 +6,8 @@ import { compareSync } from 'bcrypt';
 import { CreateUserDto } from '../users/dto';
 import { UsersService } from '../users/users.service';
 import { JwtPayload } from './interfaces/JwtPayload.interface';
-import { SecureUser } from '../users/interfaces/secure-user.interface';
+import { UserDto } from '../users/dto/user.dto';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, pass: string) {
+  async validateUser(username: string, pass: string): Promise<User> {
     const user = await this.usersService.getFullUser(username);
     if (!user || !compareSync(pass, user.password)) return null;
 
@@ -23,10 +24,10 @@ export class AuthService {
     return user;
   }
 
-  async loginUser(user: SecureUser) {
+  async loginUser(user: User) {
     const access_token = this.getAccessToken(user);
 
-    return { user, access_token };
+    return { user: new UserDto(user), access_token };
   }
 
   async registerUser(createUserDto: CreateUserDto) {
@@ -34,15 +35,15 @@ export class AuthService {
     return this.loginUser(user);
   }
 
-  async updateProfilePhoto(user: SecureUser, file: Express.Multer.File) {
+  async updateProfilePhoto(user: User, file: Express.Multer.File) {
     return this.usersService.updateProfilePhoto(user.id, file);
   }
 
-  async destroyProfilePhoto(user: SecureUser) {
+  async destroyProfilePhoto(user: User) {
     return this.usersService.removeProfilePhoto(user.id);
   }
 
-  private getAccessToken(user: SecureUser) {
+  private getAccessToken(user: User) {
     const payload: JwtPayload = { sub: user.id };
     return this.jwtService.sign(payload);
   }

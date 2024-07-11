@@ -34,7 +34,7 @@ export class User {
   profilePhoto?: CloudinaryImage;
 
   @Column('timestamp', { nullable: true, name: 'email_verified_at' })
-  emailVerifiedAt?: boolean;
+  emailVerifiedAt?: Date;
 
   @Column('boolean', { default: false, name: 'is_super_user' })
   isSuperUser?: boolean;

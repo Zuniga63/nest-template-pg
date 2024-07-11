@@ -6,10 +6,10 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { hashPassword } from '../auth/utils/hash-password';
-import { SecureUser } from './interfaces/secure-user.interface';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { CloudinaryImage } from '../cloudinary/interfaces';
 import { CloudinaryPresets } from 'src/config';
+import { UserDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -36,7 +36,7 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  async findOne(id: string): Promise<SecureUser> {
+  async findOne(id: string): Promise<User> {
     const user = await this.usersRepository.findOne({ where: { id }, relations: ['role'] });
     return user;
   }
@@ -78,7 +78,7 @@ export class UsersService {
         this.cloudinaryService.destroyFile(currentProfilePath.publicId);
       }
 
-      return user;
+      return new UserDto(user);
     } catch (error) {
       this.logger.error(error);
       if (image) {
@@ -101,6 +101,6 @@ export class UsersService {
     user.profilePhoto = null;
     await this.usersRepository.save(user);
 
-    return user;
+    return new UserDto(user);
   }
 }

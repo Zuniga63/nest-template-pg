@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Request, UseGuards, Get, UploadedFile, UseInterceptors, Delete } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, UploadedFile, UseInterceptors, Delete } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -22,9 +22,9 @@ import { ValidationErrorDto } from '../common/dto/validation-error.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { Auth } from './decorators';
 import { GetUser } from '../common/decorators/get-user.decorator';
-import { SecureUser } from '../users/interfaces/secure-user.interface';
 import { ProfilePhotoDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { User } from '../users/entities/user.entity';
 
 @Controller('auth')
 @ApiExtraModels(UserDto)
@@ -47,8 +47,8 @@ export class AuthController {
   })
   @ApiUnauthorizedResponse({ description: 'Email or password invalid.' })
   @Post('local/login')
-  async localLogin(@Request() req: any) {
-    return this.authService.loginUser(req.user);
+  async localLogin(@GetUser() user: User) {
+    return this.authService.loginUser(user);
   }
 
   // * ----------------------------------------------------------------------------------------------------------------
@@ -86,10 +86,10 @@ export class AuthController {
   })
   @ApiOkResponse({
     description: 'User Info',
-    type: UserDto,
+    // type: UserDto,
   })
-  getProfile(@GetUser() user: SecureUser) {
-    return user;
+  getProfile(@GetUser() user: User) {
+    return new UserDto(user);
   }
 
   @Auth()
@@ -102,7 +102,7 @@ export class AuthController {
     type: UserDto,
   })
   @ApiBadRequestResponse({ description: 'The image can not uploaded' })
-  updateProfilePhoto(@UploadedFile() file: Express.Multer.File, @GetUser() user: SecureUser) {
+  updateProfilePhoto(@UploadedFile() file: Express.Multer.File, @GetUser() user: User) {
     return this.authService.updateProfilePhoto(user, file);
   }
 
@@ -114,7 +114,7 @@ export class AuthController {
     type: UserDto,
   })
   @ApiBadRequestResponse({ description: 'The image can not deleted' })
-  destroyProfilePhoto(@GetUser() user: SecureUser) {
+  destroyProfilePhoto(@GetUser() user: User) {
     return this.authService.destroyProfilePhoto(user);
   }
 }
