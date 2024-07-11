@@ -26,7 +26,8 @@
     "migration:run": "npm run typeorm migration:run -- -d ./src/config/connection-source.ts",
     "migration:generate": "npm run typeorm -- -d ./src/config/connection-source.ts migration:generate ./src/migrations/%npm_config_name%",
     "migration:create": "npm run typeorm -- migration:create ./src/migrations/%npm_config_name%",
-    "migration:revert": "npm run typeorm -- -d ./src/config/connection-source.ts migration:revert"
+    "migration:revert": "npm run typeorm -- -d ./src/config/connection-source.ts migration:revert",
+    "migration:drop": "npm run typeorm -- -d ./src/config/connection-source.ts schema:drop"
   },
   "dependencies": {
     "@nestjs/common": "10.3.9",
