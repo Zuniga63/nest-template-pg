@@ -28,15 +28,15 @@ export class AuthService {
     return user;
   }
 
-  async loginUser({ user, ip, userAgent }: AuthLoginParams) {
+  async signin({ user, ip, userAgent }: AuthLoginParams) {
     const session = await this.sessionService.createSession({ user, ip, userAgent });
     const access_token = this.createAccessToken({ user, session_id: session.id });
     return { user: new UserDto(user), access_token };
   }
 
-  async registerUser(createUserDto: CreateUserDto) {
+  async signup(createUserDto: CreateUserDto) {
     const user = await this.usersService.create(createUserDto);
-    return this.loginUser({ user, ip: '1', userAgent: '1' });
+    return this.signin({ user, ip: '1', userAgent: '1' });
   }
 
   async updateProfilePhoto(user: User, file: Express.Multer.File) {

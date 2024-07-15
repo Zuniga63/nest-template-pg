@@ -31,6 +31,7 @@ export class AuthController {
   // * ----------------------------------------------------------------------------------------------------------------
   // * LOGIN LOCAL USER
   // * ----------------------------------------------------------------------------------------------------------------
+  @Post('local/signin')
   @UseGuards(LocalAuthGuard)
   @ApiOperation({
     summary: 'Login User',
@@ -42,15 +43,14 @@ export class AuthController {
     schema: AuthResponseSchema,
   })
   @ApiUnauthorizedResponse({ description: 'Email or password invalid.' })
-  @Post('local/login')
   async localLogin(@GetUser() user: User, @Ip() ip: string, @Headers('user-agent') userAgent: string) {
-    return this.authService.loginUser({ user, ip, userAgent });
+    return this.authService.signin({ user, ip, userAgent });
   }
 
   // * ----------------------------------------------------------------------------------------------------------------
   // * REGISTER LOCAL USER
   // * ----------------------------------------------------------------------------------------------------------------
-  @Post('local/register')
+  @Post('local/signup')
   @ApiOperation({
     summary: 'Register user',
     description: 'Public end point for create the user and return access token',
@@ -68,6 +68,6 @@ export class AuthController {
     type: ValidationErrorDto,
   })
   localRegister(@Body() createUserDto: CreateUserDto) {
-    return this.authService.registerUser(createUserDto);
+    return this.authService.signup(createUserDto);
   }
 }
