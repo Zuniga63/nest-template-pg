@@ -13,14 +13,19 @@ export class SessionService {
   ) {}
 
   async createSession({ user, ip, userAgent }: AuthLoginParams) {
-    const session = this.sessionRepository.create({
-      user,
-      ipAddress: ip,
-      userAgent,
-      lastActivity: new Date(Date.now()),
+    const now = new Date(Date.now());
+
+    const existingSession = await this.sessionRepository.findOne({
+      where: { user: { id: user.id }, ipAddress: ip, userAgent: userAgent },
     });
 
-    return this.sessionRepository.save(session);
+    if (existingSession) {
+      existingSession.lastActivity = now;
+      return this.sessionRepository.save(existingSession);
+    }
+
+    const newSession = this.sessionRepository.create({ user, ipAddress: ip, userAgent, lastActivity: now });
+    return this.sessionRepository.save(newSession);
   }
 
   async updateLastActivity(id: string) {
