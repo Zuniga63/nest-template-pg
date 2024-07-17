@@ -6,7 +6,7 @@ export class UserDto {
   id: string;
 
   @ApiProperty({ example: 'Jhon Doe' })
-  name: string;
+  username: string;
 
   @ApiProperty({ example: 'jhondoe@email.com' })
   email: string;
@@ -32,7 +32,7 @@ export class UserDto {
   constructor(user?: User) {
     if (!user) return;
     this.id = user.id;
-    this.name = user.name;
+    this.username = user.username;
     this.email = user.email;
     this.profilePhoto = user.profilePhoto?.url;
     this.emailVerifiedAt = user.emailVerifiedAt?.toISOString() || undefined;

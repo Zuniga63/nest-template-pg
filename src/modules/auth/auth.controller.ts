@@ -57,7 +57,7 @@ export class AuthController {
   })
   @ApiCreatedResponse({
     description: 'The user has been successfully created.',
-    schema: AuthResponseSchema,
+    type: UserDto,
   })
   @ApiBadRequestResponse({
     description: 'Some of the submitted field have not passed primary validation',

@@ -36,7 +36,7 @@ export class AuthService {
 
   async signup(createUserDto: CreateUserDto) {
     const user = await this.usersService.create(createUserDto);
-    return this.signin({ user, ip: '1', userAgent: '1' });
+    return new UserDto(user);
   }
 
   async updateProfilePhoto(user: User, file: Express.Multer.File) {

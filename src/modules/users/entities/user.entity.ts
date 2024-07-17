@@ -20,7 +20,7 @@ export class User {
   id: string;
 
   @Column('text')
-  name: string;
+  username: string;
 
   @ManyToOne(() => Role, role => role.users, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'role_id' })

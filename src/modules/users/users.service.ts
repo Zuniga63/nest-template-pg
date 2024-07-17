@@ -73,7 +73,7 @@ export class UsersService {
       // * Upload the image to Cloudinary
       image = await this.cloudinaryService.uploadImage({
         file,
-        fileName: user.name,
+        fileName: user.username,
         preset: CloudinaryPresets.PROFILE_PHOTO,
       });
 
