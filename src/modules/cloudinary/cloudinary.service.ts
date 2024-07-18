@@ -30,10 +30,7 @@ export class CloudinaryService {
     const options: UploadApiOptions = { upload_preset: preset, resource_type: fileType };
 
     if (fileName) {
-      const name = encodeURIComponent(createSlug(fileName));
-      const id = nanoid(10);
-
-      options.public_id = `${name}-${id}`;
+      options.public_id = this.createUniqueFileName(fileName);
     }
 
     const uploadedFile = await new Promise<UploadApiResponse | undefined>((resolve, reject) => {
@@ -45,6 +42,21 @@ export class CloudinaryService {
       bufferToStream(file.buffer).pipe(upload);
     });
 
+    return createCloudinaryImageAdapter(uploadedFile);
+  }
+
+  async uploadImageFromUrl(
+    url: string,
+    fileName?: string,
+    preset = CloudinaryPresets.DEFAULT,
+  ): Promise<CloudinaryImage | undefined> {
+    const options: UploadApiOptions = { upload_preset: preset };
+
+    if (fileName) {
+      options.public_id = this.createUniqueFileName(fileName);
+    }
+
+    const uploadedFile = await cloudinary.uploader.upload(url, options);
     return createCloudinaryImageAdapter(uploadedFile);
   }
 
@@ -63,5 +75,12 @@ export class CloudinaryService {
     }
 
     return false;
+  }
+
+  private createUniqueFileName(fileName: string) {
+    const name = encodeURIComponent(createSlug(fileName));
+    const id = nanoid(10);
+
+    return `${name}-${id}`;
   }
 }
