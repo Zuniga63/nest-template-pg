@@ -22,6 +22,11 @@ export interface EnvironmentVariables {
     apiKey: string;
     apiSecret: string;
   };
+  googleOAuth: {
+    clientId: string;
+    clientSecret: string;
+    callbackUrl: string;
+  };
 }
 
 export const appConfig = (): EnvironmentVariables => ({
@@ -50,5 +55,10 @@ export const appConfig = (): EnvironmentVariables => ({
     cloudName: process.env.CLOUDINARY_CLOUD_NAME,
     apiKey: process.env.CLOUDINARY_API_KEY,
     apiSecret: process.env.CLOUDINARY_API_SECRET,
+  },
+  googleOAuth: {
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackUrl: process.env.GOOGLE_CALLBACK_URL,
   },
 });

@@ -12,6 +12,7 @@ import { LocalStrategy, JwtStrategy } from './strategies';
 import { ProfileController } from './profile.controller';
 
 import { AuthService, SessionService } from './services';
+import { GoogleStrategy } from './strategies/google.strategy';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { AuthService, SessionService } from './services';
 
     TypeOrmModule.forFeature([Session]),
   ],
-  providers: [AuthService, SessionService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, SessionService, LocalStrategy, JwtStrategy, GoogleStrategy],
   controllers: [AuthController, ProfileController],
 })
 export class AuthModule {}

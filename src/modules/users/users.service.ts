@@ -12,6 +12,7 @@ import { CloudinaryPresets } from 'src/config';
 import { UserDto } from './dto/user.dto';
 import { ChangePasswordDto } from '../auth/dto/change-password.dto';
 import { compareSync } from 'bcrypt';
+import { GoogleUserDto } from '../auth/dto/google-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -32,6 +33,44 @@ export class UsersService {
     delete user.password;
 
     return user;
+  }
+
+  async createFromGoogle(googleUser: GoogleUserDto) {
+    const user = await this.usersRepository.findOne({ where: { email: googleUser.email } });
+    if (user) {
+      if (!user.emailVerifiedAt) user.emailVerifiedAt = new Date();
+
+      if (!user.profilePhoto && googleUser.picture) {
+        try {
+          user.profilePhoto = await this.cloudinaryService.uploadImageFromUrl(
+            googleUser.picture,
+            user.username,
+            CloudinaryPresets.PROFILE_PHOTO,
+          );
+        } catch (error) {
+          this.logger.error('No se pudo cargar la imagen desde la url');
+        }
+      }
+
+      return this.usersRepository.save(user);
+    }
+
+    const newImage: CloudinaryImage | undefined = googleUser.picture
+      ? await this.cloudinaryService.uploadImageFromUrl(
+          googleUser.picture,
+          googleUser.username,
+          CloudinaryPresets.PROFILE_PHOTO,
+        )
+      : undefined;
+
+    const newUser = this.usersRepository.create({
+      email: googleUser.email,
+      username: googleUser.username,
+      profilePhoto: newImage,
+      emailVerifiedAt: new Date(),
+    });
+
+    return this.usersRepository.save(newUser);
   }
 
   findAll() {

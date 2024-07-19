@@ -29,7 +29,7 @@ export class User {
   @Column('text', { unique: true })
   email: string;
 
-  @Column('text', { select: false })
+  @Column('text', { select: false, nullable: true })
   password: string;
 
   @Column('json', { nullable: true, name: 'profile_photo' })
